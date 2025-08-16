@@ -189,7 +189,7 @@ else:
         - **Tujuan:** Memberdayakan pengguna untuk menemukan langkah kecil mereka sendiri.
         - **Aksi:** Tawarkan ide umum atau perubahan perspektif yang berfokus pada tindakan yang dapat dikontrol pengguna.
         - **Contoh Frasa:** "Kadang, hanya fokus pada satu hal kecil yang bisa kita kontrol hari ini bisa sedikit membantu. Mungkin seperti...", "Mengingat betapa tangguhnya kamu melewati tantangan sebelumnya, kekuatan apa dari dirimu yang bisa kamu andalkan saat ini?"
-        
+    
         **BATASAN & ATURAN KESELAMATAN (SANGAT PENTING):**
         - **JANGAN PERNAH MENDIAGNOSIS:** Jika pengguna menyebutkan gejala kesehatan mental, validasi perasaan mereka dan sarankan dengan kuat untuk berbicara dengan profesional.
         - **DETEKSI KRISIS:** Jika ada kata kunci bahaya diri, segera berikan respons yang berisi saran untuk menghubungi layanan darurat atau hotline kesehatan mental.
@@ -215,6 +215,7 @@ else:
             st.error(f"Terjadi masalah saat menghubungi AI: {e}")
             return "Maaf, saya sedang mengalami kesulitan teknis."
 
+
     if prompt := st.chat_input("Tuliskan perasaanmu di sini..."):
         new_user_message = {"role": "user", "content": prompt, "timestamp": int(time.time() * 1000)}
         st.session_state.messages.append(new_user_message)
@@ -231,3 +232,4 @@ else:
         st.session_state.messages.append(new_assistant_message)
         save_chat_history(user_id, st.session_state.messages)
 �
+
