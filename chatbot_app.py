@@ -24,11 +24,14 @@ Saran yang saya berikan dihasilkan oleh AI dan bersifat umum. Mohon pertimbangka
 st.divider()
 
 # --- Input API Key (PENTING) ---
-# Di aplikasi nyata, gunakan st.secrets untuk keamanan
-# api_key = st.sidebar.text_input("Masukkan Google AI API Key Anda", type="password")
-# Untuk kemudahan di lingkungan ini, kita akan membiarkannya kosong.
-# Canvas akan secara otomatis menyediakan akses jika diperlukan.
-API_KEY = st.secrets["GOOGLE_API_KEY"]
+# Mengambil API key dari secrets management Streamlit untuk keamanan.
+# Pastikan Anda sudah mengaturnya di dashboard Streamlit Community Cloud.
+try:
+    API_KEY = st.secrets["GOOGLE_API_KEY"]
+except (FileNotFoundError, KeyError):
+    st.error("Kunci API Google tidak ditemukan. Mohon atur di secrets.toml atau di pengaturan Streamlit Cloud.")
+    st.stop()
+    
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={API_KEY}"
 
 # --- Inisialisasi Riwayat Obrolan ---
@@ -127,4 +130,3 @@ if prompt := st.chat_input("Tuliskan perasaanmu di sini..."):
         message_placeholder.markdown(full_response)
         
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-
