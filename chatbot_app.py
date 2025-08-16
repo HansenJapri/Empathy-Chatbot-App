@@ -14,16 +14,26 @@ st.set_page_config(
 
 # --- Konfigurasi Firebase ---
 # Ganti dengan konfigurasi Firebase Anda sendiri.
-# Simpan ini di Streamlit Secrets untuk keamanan!
-# Contoh: st.secrets["firebaseConfig"]
+# Untuk keamanan, lebih baik simpan ini di Streamlit Secrets.
+# Contoh: firebase_config = st.secrets["firebaseConfig"]
 try:
-    firebase_config = st.secrets["firebaseConfig"]
-    # Konfigurasi ini harus dalam format JSON di Streamlit Secrets
-    firebase = pyrebase.initialize_app(json.loads(firebase_config))
+    # Ini adalah konfigurasi yang sudah diperbaiki
+    firebase_config = {
+        "apiKey": "AIzaSyDPnWnMH3CGhjiqT5Z8cf2QUCNY7rFdrjQ",
+        "authDomain": "chatbot-56ddf.firebaseapp.com",
+        "projectId": "chatbot-56ddf",
+        "storageBucket": "chatbot-56ddf.appspot.com",
+        "messagingSenderId": "599287207621",
+        "appId": "1:599287207621:web:f360313c046ecad26b42ac",
+        "measurementId": "G-47JBZ6KDY6",
+        "databaseURL": "https://chatbot-56ddf.firebaseio.com" # Pastikan URL ini benar
+    }
+
+    firebase = pyrebase.initialize_app(firebase_config)
     auth = firebase.auth()
     db = firebase.database()
-except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-    st.error(f"Konfigurasi Firebase tidak ditemukan atau tidak valid di Streamlit Secrets. Pastikan Anda telah mengaturnya. Error: {e}")
+except Exception as e:
+    st.error(f"Gagal menginisialisasi Firebase. Cek kembali konfigurasi Anda. Error: {e}")
     st.stop()
 
 
@@ -60,12 +70,15 @@ def save_chat_history(user_id, messages):
     """Menyimpan seluruh riwayat obrolan ke Firebase Realtime Database."""
     try:
         # Menggunakan timestamp sebagai kunci unik untuk setiap pesan
+        data_to_save = {}
         for msg in messages:
             # Pastikan setiap pesan memiliki timestamp unik untuk pengurutan
             if 'timestamp' not in msg:
                  msg['timestamp'] = int(time.time() * 1000) # milidetik
-            # Membuat kunci unik untuk setiap pesan
-            db.child("users").child(user_id).child("messages").push(msg)
+            # Membuat struktur data yang akan di-set ke Firebase
+            data_to_save[msg['timestamp']] = msg
+        
+        db.child("users").child(user_id).child("messages").set(data_to_save)
     except Exception as e:
         st.error(f"Gagal menyimpan riwayat obrolan: {e}")
 
@@ -79,7 +92,7 @@ if 'user' not in st.session_state:
     st.session_state.user = None
 
 if st.session_state.user is None:
-    st.title("Selamat Datang di Teman Curhat AI �")
+    st.title("Selamat Datang di Teman Curhat AI 🧠")
     st.markdown("Silakan masuk atau buat akun untuk memulai percakapan yang aman dan personal.")
 
     choice = st.selectbox("Pilih Opsi:", ["Masuk (Login)", "Daftar (Sign Up)"])
