@@ -231,5 +231,6 @@ else:
         new_assistant_message = {"role": "assistant", "content": assistant_response_text, "timestamp": int(time.time() * 1000)}
         st.session_state.messages.append(new_assistant_message)
         save_chat_history(user_id, st.session_state.messages)
-�
+
+
 
