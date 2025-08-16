@@ -22,7 +22,8 @@ try:
         "messagingSenderId": "599287207621",
         "appId": "1:599287207621:web:f360313c046ecad26b42ac",
         "measurementId": "G-47JBZ6KDY6",
-        "databaseURL": "https://chatbot-56ddf.firebaseio.com"
+        # URL yang sudah diperbaiki
+        "databaseURL": "https://chatbot-56ddf-default-rtdb.firebaseio.com"
     }
     firebase = pyrebase.initialize_app(firebase_config)
     auth = firebase.auth()
@@ -77,9 +78,6 @@ if st.session_state.user is None:
     st.title("Selamat Datang di Teman Curhat AI 🧠")
     st.markdown("Silakan masuk atau buat akun untuk memulai percakapan yang aman dan personal.")
 
-    # ==============================================================================
-    # PERUBAHAN UI DIMULAI DI SINI: Menggunakan st.tabs
-    # ==============================================================================
     login_tab, signup_tab = st.tabs(["Masuk (Login)", "Daftar (Sign Up)"])
 
     with login_tab:
@@ -96,7 +94,6 @@ if st.session_state.user is None:
                     time.sleep(1)
                     st.rerun()
                 except Exception as e:
-                    # Mengurai pesan error dari Firebase untuk ditampilkan ke pengguna
                     try:
                         error_json = e.args[1]
                         error_message = json.loads(error_json)['error']['message']
@@ -142,10 +139,6 @@ if st.session_state.user is None:
             else:
                 st.warning("Mohon isi semua kolom.")
 
-    # ==============================================================================
-    # PERUBAHAN UI SELESAI DI SINI
-    # ==============================================================================
-
 else:
     # --- UI Utama Aplikasi Obrolan ---
     user_info = st.session_state.user
@@ -156,7 +149,7 @@ else:
         st.session_state.user = None
         st.rerun()
 
-    st.title("Teman Curhat AI Anda �")
+    st.title("Teman Curhat AI Anda 🧠")
     st.markdown("Selamat datang kembali! Saya di sini untuk mendengarkan Anda dengan **pemahaman dan empati yang lebih mendalam**.")
     st.warning("**Penting:** Saya adalah AI dan **bukan pengganti profesional kesehatan mental.**", icon="⚠️")
     st.divider()
@@ -189,7 +182,7 @@ else:
         - **Tujuan:** Memberdayakan pengguna untuk menemukan langkah kecil mereka sendiri.
         - **Aksi:** Tawarkan ide umum atau perubahan perspektif yang berfokus pada tindakan yang dapat dikontrol pengguna.
         - **Contoh Frasa:** "Kadang, hanya fokus pada satu hal kecil yang bisa kita kontrol hari ini bisa sedikit membantu. Mungkin seperti...", "Mengingat betapa tangguhnya kamu melewati tantangan sebelumnya, kekuatan apa dari dirimu yang bisa kamu andalkan saat ini?"
-    
+        
         **BATASAN & ATURAN KESELAMATAN (SANGAT PENTING):**
         - **JANGAN PERNAH MENDIAGNOSIS:** Jika pengguna menyebutkan gejala kesehatan mental, validasi perasaan mereka dan sarankan dengan kuat untuk berbicara dengan profesional.
         - **DETEKSI KRISIS:** Jika ada kata kunci bahaya diri, segera berikan respons yang berisi saran untuk menghubungi layanan darurat atau hotline kesehatan mental.
@@ -215,7 +208,6 @@ else:
             st.error(f"Terjadi masalah saat menghubungi AI: {e}")
             return "Maaf, saya sedang mengalami kesulitan teknis."
 
-
     if prompt := st.chat_input("Tuliskan perasaanmu di sini..."):
         new_user_message = {"role": "user", "content": prompt, "timestamp": int(time.time() * 1000)}
         st.session_state.messages.append(new_user_message)
@@ -231,6 +223,3 @@ else:
         new_assistant_message = {"role": "assistant", "content": assistant_response_text, "timestamp": int(time.time() * 1000)}
         st.session_state.messages.append(new_assistant_message)
         save_chat_history(user_id, st.session_state.messages)
-
-
-
